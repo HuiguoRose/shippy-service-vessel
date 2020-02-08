@@ -325,7 +325,7 @@ func (c *vesselServiceClient) Create(ctx context.Context, in *Vessel, opts ...cl
 }
 
 func (c *vesselServiceClient) GetVessel(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*Response, error) {
-	req := c.c.NewRequest(c.serviceName, "VesselService.GetVessel", in)
+	req := c.c.NewRequest(c.serviceName, "VesselService.GetVessels", in)
 	out := new(Response)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {

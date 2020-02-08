@@ -44,6 +44,13 @@ func MarshalVessel(vessel *pb.Vessel) *Vessel {
 		OwnerId:   vessel.OwnerId,
 	}
 }
+func UnmarshalVesselCollection(vessels Vessels) []*pb.Vessel {
+	collection := make([]*pb.Vessel, 0)
+	for _, vessel := range vessels {
+		collection = append(collection, UnmarshalVessel(vessel))
+	}
+	return collection
+}
 
 func UnmarshalSpecification(specification *Specification) *pb.Specification {
 	return &pb.Specification{
@@ -62,6 +69,7 @@ func MarshalSpecification(specification *pb.Specification) *Specification {
 type Repository interface {
 	FindAvailable(ctx context.Context, spec *Specification) (*Vessel, error)
 	Create(ctx context.Context, vessel *Vessel) error
+	GetVessels(ctx context.Context) (Vessels, error)
 }
 
 // VesselRepository implementation
@@ -94,4 +102,17 @@ func (repository *VesselRepository) FindAvailable(ctx context.Context, spec *Spe
 func (repository *VesselRepository) Create(ctx context.Context, vessel *Vessel) error {
 	_, err := repository.collection.InsertOne(ctx, vessel)
 	return err
+}
+
+func (repository *VesselRepository) GetVessels(ctx context.Context) (Vessels, error) {
+	cur, err := repository.collection.Find(ctx, nil, nil)
+	var vessels Vessels
+	for cur.Next(ctx) {
+		var vessel *Vessel
+		if err := cur.Decode(&vessel); err != nil {
+			return nil, err
+		}
+		vessels = append(vessels, vessel)
+	}
+	return vessels, err
 }

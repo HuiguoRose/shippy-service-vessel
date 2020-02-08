@@ -23,11 +23,19 @@ func (s *handler) FindAvailable(ctx context.Context, req *pb.Specification, res 
 	return nil
 }
 
-
 func (s *handler) Create(ctx context.Context, req *pb.Vessel, res *pb.Response) error {
 	if err := s.repo.Create(ctx, MarshalVessel(req)); err != nil {
 		return err
 	}
 	res.Vessel = req
+	return nil
+}
+
+func (s *handler) GetVessels(ctx context.Context, req *pb.GetRequest, res *pb.Response) error {
+	vessels, err := s.repo.GetVessels(ctx)
+	if err != nil {
+		return err
+	}
+	res.Vessels = UnmarshalVesselCollection(vessels)
 	return nil
 }
