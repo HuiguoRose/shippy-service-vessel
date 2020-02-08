@@ -8,7 +8,7 @@ service VesselService {
     }
     rpc Create (Vessel) returns (Response) {
     }
-    rpc GetVessel (GetRequest) returns (Response) {
+    rpc GetVessels (GetRequest) returns (Response) {
     }
 }
 // Created a blank get request
