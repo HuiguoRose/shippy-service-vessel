@@ -22,3 +22,12 @@ func (s *handler) FindAvailable(ctx context.Context, req *pb.Specification, res 
 	res.Vessel = UnmarshalVessel(vessel)
 	return nil
 }
+
+
+func (s *handler) Create(ctx context.Context, req *pb.Vessel, res *pb.Response) error {
+	if err := s.repo.Create(ctx, MarshalVessel(req)); err != nil {
+		return err
+	}
+	res.Vessel = req
+	return nil
+}
