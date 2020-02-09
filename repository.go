@@ -5,6 +5,7 @@ import (
 	pb "github.com/HuiguoRose/shippy-service-vessel/proto/vessel"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"log"
 )
 
 type Vessel struct {
@@ -84,15 +85,21 @@ func (repository *VesselRepository) FindAvailable(ctx context.Context, spec *Spe
 	filter := bson.D{{
 		"capacity",
 		bson.D{{
-			"$lte",
+			"$gte",
 			spec.Capacity,
-		}, {
-			"$lte",
+		}},
+	}, {
+		"maxweight",
+		bson.D{{
+			"$gte",
 			spec.MaxWeight,
 		}},
 	}}
 	vessel := &Vessel{}
-	if err := repository.collection.FindOne(ctx, filter).Decode(vessel); err != nil {
+	x := repository.collection.FindOne(ctx, filter)
+	log.Printf("==== %v\n", filter)
+	log.Printf("==== %v\n", x)
+	if err := x.Decode(vessel); err != nil {
 		return nil, err
 	}
 	return vessel, nil
@@ -105,7 +112,13 @@ func (repository *VesselRepository) Create(ctx context.Context, vessel *Vessel) 
 }
 
 func (repository *VesselRepository) GetVessels(ctx context.Context) (Vessels, error) {
-	cur, err := repository.collection.Find(ctx, nil, nil)
+	cur, err := repository.collection.Find(ctx, bson.D{})
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = cur.Close(ctx)
+	}()
 	var vessels Vessels
 	for cur.Next(ctx) {
 		var vessel *Vessel

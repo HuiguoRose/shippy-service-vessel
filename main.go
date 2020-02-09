@@ -34,10 +34,9 @@ func main() {
 		log.Panic(err)
 	}
 	defer client.Disconnect(context.Background())
+	vesselsCollection := client.Database("shippy").Collection("vessels")
 
-	consignmentCollection := client.Database("shippy").Collection("vessels")
-
-	repository := &VesselRepository{consignmentCollection}
+	repository := &VesselRepository{vesselsCollection}
 	// Register our implementation with
 	pb.RegisterVesselServiceHandler(srv.Server(), &handler{repository})
 

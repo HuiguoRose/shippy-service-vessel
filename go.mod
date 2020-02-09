@@ -8,3 +8,5 @@ require (
 	go.mongodb.org/mongo-driver v1.3.0
 	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
 )
+
+replace sigs.k8s.io/yaml => github.com/kubernetes-sigs/yaml v1.1.0
