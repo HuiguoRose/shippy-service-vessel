@@ -9,12 +9,6 @@ import (
 	math "math"
 )
 
-import (
-	client "github.com/micro/go-micro/client"
-	server "github.com/micro/go-micro/server"
-	context "golang.org/x/net/context"
-)
-
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
@@ -271,93 +265,4 @@ var fileDescriptor_04ef66862bb50716 = []byte{
 	0x3f, 0x78, 0x01, 0xee, 0x1d, 0x1b, 0xe3, 0x41, 0x94, 0xa3, 0xea, 0x6b, 0x7e, 0xf0, 0x59, 0x9d,
 	0x11, 0x1b, 0xc5, 0x6e, 0x09, 0x8e, 0xdd, 0x5a, 0xb8, 0xbc, 0x35, 0x57, 0x3f, 0x01, 0x00, 0x00,
 	0xff, 0xff, 0x45, 0x0b, 0xfa, 0xbc, 0x52, 0x02, 0x00, 0x00,
-}
-
-// Reference imports to suppress errors if they are not otherwise used.
-var _ context.Context
-var _ client.Option
-var _ server.Option
-
-// Client API for VesselService service
-
-type VesselServiceClient interface {
-	FindAvailable(ctx context.Context, in *Specification, opts ...client.CallOption) (*Response, error)
-	Create(ctx context.Context, in *Vessel, opts ...client.CallOption) (*Response, error)
-	GetVessels(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*Response, error)
-}
-
-type vesselServiceClient struct {
-	c           client.Client
-	serviceName string
-}
-
-func NewVesselServiceClient(serviceName string, c client.Client) VesselServiceClient {
-	if c == nil {
-		c = client.NewClient()
-	}
-	if len(serviceName) == 0 {
-		serviceName = "vessel"
-	}
-	return &vesselServiceClient{
-		c:           c,
-		serviceName: serviceName,
-	}
-}
-
-func (c *vesselServiceClient) FindAvailable(ctx context.Context, in *Specification, opts ...client.CallOption) (*Response, error) {
-	req := c.c.NewRequest(c.serviceName, "VesselService.FindAvailable", in)
-	out := new(Response)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *vesselServiceClient) Create(ctx context.Context, in *Vessel, opts ...client.CallOption) (*Response, error) {
-	req := c.c.NewRequest(c.serviceName, "VesselService.Create", in)
-	out := new(Response)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *vesselServiceClient) GetVessels(ctx context.Context, in *GetRequest, opts ...client.CallOption) (*Response, error) {
-	req := c.c.NewRequest(c.serviceName, "VesselService.GetVessels", in)
-	out := new(Response)
-	err := c.c.Call(ctx, req, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// Server API for VesselService service
-
-type VesselServiceHandler interface {
-	FindAvailable(context.Context, *Specification, *Response) error
-	Create(context.Context, *Vessel, *Response) error
-	GetVessels(context.Context, *GetRequest, *Response) error
-}
-
-func RegisterVesselServiceHandler(s server.Server, hdlr VesselServiceHandler, opts ...server.HandlerOption) {
-	s.Handle(s.NewHandler(&VesselService{hdlr}, opts...))
-}
-
-type VesselService struct {
-	VesselServiceHandler
-}
-
-func (h *VesselService) FindAvailable(ctx context.Context, in *Specification, out *Response) error {
-	return h.VesselServiceHandler.FindAvailable(ctx, in, out)
-}
-
-func (h *VesselService) Create(ctx context.Context, in *Vessel, out *Response) error {
-	return h.VesselServiceHandler.Create(ctx, in, out)
-}
-
-func (h *VesselService) GetVessels(ctx context.Context, in *GetRequest, out *Response) error {
-	return h.VesselServiceHandler.GetVessels(ctx, in, out)
 }
