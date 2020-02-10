@@ -37,8 +37,9 @@ func main() {
 
 	repository := &VesselRepository{vesselsCollection}
 	// Register our implementation with
-	pb.RegisterVesselServiceHandler(srv.Server(), &handler{repository})
-
+	if err := pb.RegisterVesselServiceHandler(srv.Server(), &handler{repository}); err != nil {
+		log.Println(err)
+	}
 	if err := srv.Run(); err != nil {
 		log.Println(err)
 	}
