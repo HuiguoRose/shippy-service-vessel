@@ -3,7 +3,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	pb "github.com/HuiguoRose/shippy-service-vessel/proto/vessel"
 	"github.com/micro/go-micro"
 	"log"
@@ -41,6 +40,6 @@ func main() {
 	pb.RegisterVesselServiceHandler(srv.Server(), &handler{repository})
 
 	if err := srv.Run(); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
